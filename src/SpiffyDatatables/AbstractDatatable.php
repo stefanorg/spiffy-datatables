@@ -43,7 +43,7 @@ abstract class AbstractDatatable implements HydratorAwareInterface
      */
     public function isServerSide()
     {
-        return isset($this->options['bServerSide']);
+        return isset($this->options['bServerSide']) && !array_key_exists('iDeferLoading',$this->options);
     }
 
     /**
