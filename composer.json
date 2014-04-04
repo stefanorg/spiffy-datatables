@@ -1,7 +1,7 @@
 {
-    "name": "spiffy/spiffy-datatables",
+    "name": "stefanorg/spiffy-datatables",
     "description": "ZF2 module for programmatic creation of jQuery Datatables.",
-    "homepage": "http://www.github.com/spiffyjr/spiffy-datatables.git",
+    "homepage": "http://www.github.com/stefanorg/spiffy-datatables.git",
     "require": {
         "php": ">=5.3.3",
         "zendframework/zend-json": "~2.2",
@@ -22,6 +22,9 @@
         "branch-alias": {
             "dev-develop": "1.x-dev"
         }
+    },
+    "replace":{
+        "spiffy/spiffy-datatables": "self.version"
     }
 }
 
