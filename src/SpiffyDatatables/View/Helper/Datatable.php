@@ -124,10 +124,14 @@ class Datatable extends AbstractHtmlElement
             $id = $this->extractId($nameOrDatatable);
         }
         return sprintf(
-            'var %1$s_jTable = $("#%1$s").dataTable(%2$s);
-             $(%1$s_jTable.fnGetNodes()).tooltip({
-                placement: $(this).data("placement") || "top"
-            })',
+            'var %1$s_jTable = $("#%1$s")
+                                    .on("draw", function(){
+                                        $("#%1$s [data-toggle=\'tooltip\']").tooltip({
+                                            placement: "top"
+                                        });
+                                    })
+                                    .dataTable(%2$s);
+             ',
             $id,
             $this->renderOptionsJavascript($nameOrDatatable)
         );
