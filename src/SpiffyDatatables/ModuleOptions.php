@@ -22,6 +22,12 @@ class ModuleOptions extends AbstractOptions
     protected $datatables = array();
 
     /**
+     * An array of javascript plugins to load on datatables render
+     * @var array
+     */
+    protected $plugins = array();
+
+    /**
      * @param array $manager
      * @return $this
      */
@@ -55,5 +61,29 @@ class ModuleOptions extends AbstractOptions
     public function getDatatables()
     {
         return $this->datatables;
+    }
+
+    /**
+     * Gets the value of plugins.
+     *
+     * @return mixed
+     */
+    public function getPlugins()
+    {
+        return $this->plugins;
+    }
+
+    /**
+     * Sets the value of plugins.
+     *
+     * @param mixed $plugins the plugins
+     *
+     * @return self
+     */
+    public function setPlugins($plugins)
+    {
+        $this->plugins = $plugins;
+
+        return $this;
     }
 }

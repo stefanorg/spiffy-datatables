@@ -7,6 +7,7 @@ use SpiffyDatatables\DatatableManager;
 use Zend\Json\Expr;
 use Zend\Json\Json;
 use Zend\View\Helper\AbstractHtmlElement;
+use SpiffyDatatables\ModuleOptions;
 
 class Datatable extends AbstractHtmlElement
 {
@@ -20,12 +21,17 @@ class Datatable extends AbstractHtmlElement
      */
     protected $jsonExpressions = array();
 
+    protected $plugins = array();
+
     /**
      * @param DatatableManager $manager
      */
-    public function __construct(DatatableManager $manager)
+    public function __construct(DatatableManager $manager, ModuleOptions $options = null)
     {
         $this->manager = $manager;
+        if($options && $options->plugins){
+            $this->plugins = $options->plugins;
+        }
     }
 
     /**
@@ -123,13 +129,27 @@ class Datatable extends AbstractHtmlElement
         if (!$id) {
             $id = $this->extractId($nameOrDatatable);
         }
+        $template =<<<EOJ
+var %1$s_jTable = $("#%1$s").dataTable(%2$s)%3$s;
+EOJ;
+
+        //check for plugins
+        if($this->plugins && is_array($this->plugins)){
+            $splugins = '';
+            foreach ($plugin as $name => $options) {
+                //options contains the callback function name
+                if(!isset($options['callback']))
+                    continue;
+                $callback = $options['callback'];
+                $splugins .= sprintf('.%s()', $callback);
+            }
+        }
+
         return sprintf(
-            'var %1$s_jTable = $("#%1$s").dataTable(%2$s);
-             $(%1$s_jTable.fnGetNodes()).tooltip({
-                placement: $(this).data("placement") || "top"
-            })',
+            $template,
             $id,
-            $this->renderOptionsJavascript($nameOrDatatable)
+            $this->renderOptionsJavascript($nameOrDatatable),
+            $splugins
         );
     }
 

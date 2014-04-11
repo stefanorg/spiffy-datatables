@@ -17,6 +17,6 @@ class DatatableFactory implements FactoryInterface
     {
         /** @var \Zend\View\HelperPluginManager $serviceLocator */
         $sl = $serviceLocator->getServiceLocator();
-        return new Datatable($sl->get('SpiffyDatatables\DatatableManager'));
+        return new Datatable($sl->get('SpiffyDatatables\DatatableManager'), $sl->get('SpiffyDatatables\ModuleOptions'));
     }
 }
