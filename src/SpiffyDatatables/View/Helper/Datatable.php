@@ -58,7 +58,17 @@ class Datatable extends AbstractHtmlElement
      */
     public function injectJs($nameOrDatatable, $id = null, $placement = 'APPEND')
     {
-        $js = sprintf('$(function() { %s });', $this->renderJavascript($nameOrDatatable, $id));
+        $datatable = $this->renderJavascript($nameOrDatatable, $id);
+        $plugins = $this->renderJavascriptPlugins($nameOrDatatable, $id);
+
+        $template = <<<'EOJ'
+$(document).ready(function() {
+    %1$s;
+    %2$s;
+});
+EOJ;
+
+        $js = sprintf($template, $datatable, is_null($plugins) ? '' : $plugins );
         $this->getView()->inlineScript('script', $js, $placement);
     }
 
@@ -129,14 +139,28 @@ class Datatable extends AbstractHtmlElement
         if (!$id) {
             $id = $this->extractId($nameOrDatatable);
         }
-        $template =<<<EOJ
-var %1$s_jTable = $("#%1$s").dataTable(%2$s)%3$s;
+
+        $template = <<<'EOJ'
+var options = %2$s;
+var %1$s_table = $("#%1$s").dataTable(options);
 EOJ;
 
+        return sprintf($template,
+            $id,
+            $this->renderOptionsJavascript($nameOrDatatable)
+        );
+    }
+
+    public function renderJavascriptPlugins($nameOrDatatable, $id = null)
+    {
+        if (!$id) {
+            $id = $this->extractId($nameOrDatatable);
+        }
+
         //check for plugins
+        $splugins = '';
         if($this->plugins && is_array($this->plugins)){
-            $splugins = '';
-            foreach ($plugin as $name => $options) {
+            foreach ($this->plugins as $name => $options) {
                 //options contains the callback function name
                 if(!isset($options['callback']))
                     continue;
@@ -145,9 +169,12 @@ EOJ;
             }
         }
 
-        return sprintf(
+        if(empty($splugins)){
+            return null;
+        }
+
+        return sprintf('%1$s_table%2$s',
             $id,
-            $this->renderOptionsJavascript($nameOrDatatable),
             $splugins
         );
     }
