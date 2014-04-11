@@ -146,7 +146,6 @@ EOJ;
         }
 
         return sprintf(
-            $template,
             $id,
             $this->renderOptionsJavascript($nameOrDatatable),
             $splugins
